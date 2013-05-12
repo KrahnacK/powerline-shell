@@ -41,16 +41,16 @@ class Color:
 class Powerline:
     symbols = {
         'compatible': {
-            'separator': u'\u25B6',
-            'separator_thin': u'\u276F'
+            'separator': u' \u25B6 ',
+            'separator_thin': u' \u276F '
         },
         'patched': {
-            'separator': u'\u2B80',
-            'separator_thin': u'\u2B81'
+            'separator': u' \u2B80 ',
+            'separator_thin': u' \u2B81 '
         },
         'flat': {
-            'separator': '',
-            'separator_thin': ''
+            'separator': ' ',
+            'separator_thin': ' '
         },
         'copy-able': {
             'separator': u'\u25B6',
@@ -207,7 +207,10 @@ def get_git_status():
             if origin_status[0][0] == 'ahead':
                 origin_position += u'\u21E1'
 
-        if line.find('nothing to commit') >= 0:
+        if (
+               line.find('nothing to commit') >= 0 or
+               line.find('nothing added to commit') >= 0 
+            ):
             has_pending_commits = False
         if line.find('Untracked files') >= 0:
             has_untracked_files = True
@@ -268,7 +271,7 @@ def add_svn_segment(powerline, cwd):
         output = p2.communicate()[0].strip()
         if len(output) > 0 and int(output) > 0:
             changes = output.strip()
-            powerline.append(Segment(powerline, '%s' % changes,
+            powerline.append(Segment(powerline, ' %s' % changes,
                 Color.SVN_CHANGES_FG, Color.SVN_CHANGES_BG))
     except OSError:
         return False
@@ -304,6 +307,7 @@ def add_root_indicator(powerline, error):
     bg = Color.CMD_PASSED_BG
     fg = Color.CMD_PASSED_FG
     """
+    #I dislike the shell remind me of my errors
     if int(error) != 0:
         fg = Color.CMD_FAILED_FG
         bg = Color.CMD_FAILED_BG
