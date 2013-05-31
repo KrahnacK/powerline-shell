@@ -6,6 +6,7 @@ import subprocess
 import sys
 import re
 import argparse
+from time import strftime
 
 
 def warn(msg):
@@ -37,6 +38,8 @@ class Color:
     VIRTUAL_ENV_BG = 35  # a mid-tone green
     VIRTUAL_ENV_FG = 00
 
+    TIME_BG = 23
+    TIME_FG = 15
 
 class Powerline:
     symbols = {
@@ -303,6 +306,9 @@ def add_virtual_env_segment(powerline, cwd):
     return True
 
 
+def add_time(powerline, error):
+    powerline.append(Segment(powerline, strftime("%H:%M:%S "), Color.TIME_FG, Color.TIME_BG))
+
 def add_root_indicator(powerline, error):
     bg = Color.CMD_PASSED_BG
     fg = Color.CMD_PASSED_FG
@@ -352,6 +358,7 @@ if __name__ == '__main__':
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(p, p.user_prompt[p.shell], 250, 240))
     #p.append(Segment(p, p.host_prompt[p.shell], 250, 238))
+    add_time(p,cwd)
     add_cwd_segment(p, cwd, 15, args.cwd_only)
     add_repo_segment(p, cwd)
     add_root_indicator(p, args.prev_error)
