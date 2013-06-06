@@ -7,6 +7,7 @@ import sys
 import re
 import argparse
 from time import strftime
+import socket
 
 
 def warn(msg):
@@ -40,6 +41,9 @@ class Color:
 
     TIME_BG = 23
     TIME_FG = 15
+
+    HOSTNAME_BG = 88
+    HOSTNAME_FG = 15
 
 class Powerline:
     symbols = {
@@ -306,6 +310,9 @@ def add_virtual_env_segment(powerline, cwd):
     return True
 
 
+def add_hostname(powerline, error):
+    powerline.append(Segment(powerline, socket.gethostname(), Color.HOSTNAME_FG, Color.HOSTNAME_BG))
+
 def add_time(powerline, error):
     powerline.append(Segment(powerline, strftime("%H:%M:%S "), Color.TIME_FG, Color.TIME_BG))
 
@@ -358,6 +365,7 @@ if __name__ == '__main__':
     add_virtual_env_segment(p, cwd)
     #p.append(Segment(p, p.user_prompt[p.shell], 250, 240))
     #p.append(Segment(p, p.host_prompt[p.shell], 250, 238))
+    add_hostname(p,cwd)
     add_time(p,cwd)
     add_cwd_segment(p, cwd, 15, args.cwd_only)
     add_repo_segment(p, cwd)
